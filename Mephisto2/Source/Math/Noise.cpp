@@ -529,13 +529,138 @@ float Noise::OpenSimplex2S_2D(Vec2<float> v)
 
 	auto ij1 = Vec2<int>(ij.X + Constants::PrimeX, ij.Y + Constants::PrimeY);
 	
-	float t = (vi.X + vi.Y) * (float)G2;
+	float t = (vi.X + vi.Y) * (float)Constants::G2;
 	auto v0 = Vec2<float>(vi.X - t, vi.Y - t);
-	// line 1106;
+	float a0 = (2.0f / 3.0f) - v0.X * v0.X - v0.Y * v0.Y;
 
+	float value = (a0 * a0) * (a0 * a0) * GradientCoordinate2D(ij, v0);
 
-	float value; // line 1112
-	return value;
+	float a1 =	(float)(2 * (1 - 2 * Constants::G2) *
+				(1 / Constants::G2 - 2)) * t +
+				((float)(-2 * (1 - 2 * Constants::G2)) + a0);
+
+	auto v1 = Vec2<float>
+		(v0.X - (float)(1 - 2 * Constants::G2),
+	     v0.Y - (float)(1 - 2 * Constants::G2));
+
+	value += (a1 * a1) * (a1 * a1) * GradientCoordinate2D(ij, v1);
+
+	float vxmvy = vi.X - vi.Y;
+	if (t > Constants::G2)
+	{
+		if (vi.X + vxmvy > 1)
+		{
+			auto v2 = Vec2<float>
+				(v0.X + (float)(3 * Constants::G2 - 2),
+				v0.Y + (float)(3 * Constants::G2 - 1));
+			float a2 = (2.0f / 3.0f) - v2.X * v2.X - v2.Y * v2.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.X += (Constants::PrimeX << 1);
+				temp.Y += Constants::PrimeY;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v2);
+			}
+		}
+		else
+		{
+			auto v2 = Vec2<float>
+				(v0.X + (float)(Constants::G2),
+					v0.Y + (float)(Constants::G2 - 1));
+			float a2 = (2.0f / 3.0f) - v2.X * v2.X - v2.Y * v2.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.Y += Constants::PrimeY;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v2);
+			}
+		}
+
+		if (vi.Y - vxmvy > 1)
+		{
+			auto v3 = Vec2<float>
+				(v0.X + (float)(3 * Constants::G2 - 1),
+					v0.Y + (float)(3 * Constants::G2 - 2));
+			float a3 = (2.0f / 3.0f) - v3.X * v3.X - v3.Y * v3.Y;
+			if (a3 > 0)
+			{
+				auto temp = ij;
+				temp.X += Constants::PrimeX;
+				temp.Y += (Constants::PrimeY << 1);
+				value += (a3 * a3) * (a3 * a3) * GradientCoordinate2D(temp, v3);
+			}
+		}
+		else
+		{
+			auto v3 = Vec2<float>
+				(v0.X + (float)(Constants::G2 - 1),
+					v0.Y + (float)(Constants::G2 ));
+			float a3 = (2.0f / 3.0f) - v3.X * v3.X - v3.Y * v3.Y;
+			if (a3 > 0)
+			{
+				auto temp = ij;
+				temp.X += Constants::PrimeX;
+				value += (a3 * a3) * (a3 * a3) * GradientCoordinate2D(temp, v3);
+			}
+		}
+	}
+	else
+	{
+		if (vi.X + vxmvy < 0)
+		{
+			auto v2 = Vec2<float>
+				(v0.X + (float)(1 - Constants::G2),
+					v0.Y + (float)(Constants::G2));
+			float a2 = (2.0f / 3.0f) - v2.X * v2.X - v2.Y * v2.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.X -= Constants::PrimeX;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v2);
+			}
+		}
+		else
+		{
+			auto v2 = Vec2<float>
+				(v0.X + (float)(Constants::G2 - 1),
+					v0.Y + (float)(Constants::G2));
+			float a2 = (2.0f / 3.0f) - v2.X * v2.X - v2.Y * v2.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.X += Constants::PrimeX;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v2);
+			}
+		}
+
+		if (vi.Y - vxmvy > 1)
+		{
+			auto v3 = Vec2<float>
+				(v0.X + (float)(Constants::G2),
+					v0.Y + (float)(Constants::G2 - 1));
+			float a2 = (2.0f / 3.0f) - v3.X * v3.X - v3.Y * v3.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.Y -= Constants::PrimeY;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v3);
+			}
+		}
+		else
+		{
+			auto v3 = Vec2<float>
+				(v0.X + (float)(Constants::G2),
+					v0.Y + (float)(Constants::G2 - 1));
+			float a2 = (2.0f / 3.0f) - v3.X * v3.X - v3.Y * v3.Y;
+			if (a2 > 0)
+			{
+				auto temp = ij;
+				temp.Y += Constants::PrimeY;
+				value += (a2 * a2) * (a2 * a2) * GradientCoordinate2D(temp, v3);
+			}
+		}
+	}
+	return value * Constants::OpenSimplex2S_2DFinalMultiplier;
 }
 
 float Noise::OpenSimplex2S_3D(Vec3<float> v)

@@ -194,7 +194,7 @@ namespace ME::Math
 		float FastMax(const Vec2<float>& vIn);
 		float FastAbs(float fIn);
 		float CastInt2Float(int in);
-		int CastFloat2Int(float in);
+		int   CastFloat2Int(float in);
 		float InverseSquareRoot(float in);
 		float FastSquareRoot(float in);
 		float FastFloor(float in);
