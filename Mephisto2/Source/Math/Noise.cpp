@@ -521,7 +521,21 @@ float Noise::OpenSimplex2_3D(Vec3<float> v)
 
 float Noise::OpenSimplex2S_2D(Vec2<float> v)
 {
-	return 0;
+	auto ij = Vec2<int>(FastFloor(v.X), FastFloor(v.Y));
+	auto vi = Vec2<float>((float)(v.X - ij.X), (float)(v.Y - ij.Y));
+	
+	ij.X *= Constants::PrimeX;
+	ij.Y *= Constants::PrimeY;
+
+	auto ij1 = Vec2<int>(ij.X + Constants::PrimeX, ij.Y + Constants::PrimeY);
+	
+	float t = (vi.X + vi.Y) * (float)G2;
+	auto v0 = Vec2<float>(vi.X - t, vi.Y - t);
+	// line 1106;
+
+
+	float value; // line 1112
+	return value;
 }
 
 float Noise::OpenSimplex2S_3D(Vec3<float> v)

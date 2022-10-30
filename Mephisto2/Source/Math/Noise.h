@@ -5,6 +5,7 @@
 /// </summary>
 /// 
 #include <Math/3D/Vector.inl>
+
 namespace ME::Math
 {
 	enum class ENoiseType : unsigned char
@@ -166,8 +167,15 @@ namespace ME::Math
 		//////////////////////////////////////////////////////////////////////////
 		// Noise Generation functions
 		//////////////////////////////////////////////////////////////////////////
-
+		
+		/// <summary>
+		/// Generates 2D Noise from the current Noise Settings
+		/// </summary>
 		float GetNoise2D(Vec2<float>& v);
+
+		/// <summary>
+		/// Generates 3D Noise from the current Noise Settings
+		/// </summary>
 		float GetNoise3D(Vec3<float>& v);
 
 		void DomainWarp2D(Vec2<float>& v);
