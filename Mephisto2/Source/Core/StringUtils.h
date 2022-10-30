@@ -66,13 +66,14 @@ namespace ME
 
 	namespace StringUtils
 	{
-		enum class ENumberBase : int
+		enum class ENumberBase : unsigned int
 		{
 			Binary = 2,
 			Octal = 8,
 			Decimal = 10,
 			Hexadecmal = 16,
 		};
+
 		void Split(const string& source, int index, string& left, string& right);
 		bool Split(const string& source, char delimiter, string& left, string& right);
 		bool Replace(string& str, const string& from, const string& to);

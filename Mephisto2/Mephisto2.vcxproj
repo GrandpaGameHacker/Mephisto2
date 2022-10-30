@@ -160,6 +160,9 @@
     <ClInclude Include="Source\Graphics\IDrawable.h" />
     <ClInclude Include="Source\Core\Component\IComponent.h" />
     <ClInclude Include="Source\Core\Object\IObject.h" />
+    <ClInclude Include="Source\Math\3D\Vector.inl" />
+    <ClInclude Include="Source\Math\Noise.h" />
+    <ClInclude Include="Source\Math\NoiseConstants.h" />
     <ClInclude Include="Source\World\IScene.h" />
     <ClInclude Include="Source\World\IWorld.h" />
     <ClInclude Include="Source\Assets\AssetLoader.h" />
@@ -184,6 +187,7 @@
     <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
+    <ClCompile Include="Source\Math\Noise.cpp" />
     <ClCompile Include="Source\World\IScene.cpp" />
     <ClCompile Include="Source\World\IWorld.cpp" />
     <ClCompile Include="Source\Core\MephistoAssert.cpp" />

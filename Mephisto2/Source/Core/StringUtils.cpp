@@ -98,7 +98,7 @@ bool ME::StringUtils::TryCastTo(const string& source, uint64& value, ENumberBase
 	{
 		spdlog::error("StringUtils::TryCastTo() -> {} is not a valid number to convert to (yet?)");
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	uint64 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -125,7 +125,7 @@ bool ME::StringUtils::TryCastTo(const string& source, uint32& value, ENumberBase
 	{
 		spdlog::error("StringUtils::TryCastTo() -> {} is not a valid number to convert to (yet?)");
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	uint32 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -153,7 +153,7 @@ bool ME::StringUtils::TryCastTo(const string& source, uint16& value, ENumberBase
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	int16 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -181,7 +181,7 @@ bool ME::StringUtils::TryCastTo(const string& source, int64& value, ENumberBase 
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	int64 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -209,7 +209,7 @@ bool ME::StringUtils::TryCastTo(const string& source, int32& value, ENumberBase 
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	int32 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -237,7 +237,7 @@ bool ME::StringUtils::TryCastTo(const string& source, uint8& value, ENumberBase 
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	uint8 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -265,7 +265,7 @@ bool ME::StringUtils::TryCastTo(const string& source, int16& value, ENumberBase 
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	int16 TestValue = 0;
 	size_t LDX = 0;
 	try
@@ -293,7 +293,7 @@ bool ME::StringUtils::TryCastTo(const string& source, int8& value, ENumberBase b
 		spdlog::error("ME::StringUtils::TryCastTo() -> {} is not a valid number", source);
 		return false;
 	}
-	int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
+	unsigned int number_base = static_cast<std::underlying_type<ENumberBase>::type>(base);
 	uint8 TestValue = 0;
 	size_t LDX = 0;
 	try
