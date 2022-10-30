@@ -13,7 +13,10 @@ namespace ME::Math::Constants
 	constexpr int InverseSquareConst = 0x5F3759DF;
 	constexpr int HashConst = 0x27D4EB2D;
 	constexpr float HashFloatConst = 2147483648.f;
-
+	constexpr float SqrtOf3 = 1.7320508075688772935274463415059f;
+	constexpr float G2 = (3 - SqrtOf3) / 6;
+	constexpr float Simplex2DFinalMultiplier = 99.83685446303647f;
+	constexpr float Simplex2_3DFinalMultiplier = 32.69428253173828125f;
 	static const float Gradients2D[] =
 	{
 		0.130526192220052f, 0.99144486137381f, 0.38268343236509f, 0.923879532511287f, 0.608761429008721f, 0.793353340291235f, 0.793353340291235f, 0.608761429008721f,

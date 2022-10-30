@@ -260,6 +260,7 @@ int Noise::Hash2D(Vec2<int> vPrimed)
 {
 	int Hash = State.Seed ^ vPrimed.X ^ vPrimed.Y;
 	Hash *= Constants::HashConst;
+	return Hash;
 }
 
 int Noise::Hash3D(Vec3<int> vPrimed)
@@ -366,60 +367,204 @@ void Noise::GradientCoordinateDual3D(Vec3<int> vPrimed, Vec3<float> vIn, Vec3<fl
 
 float Noise::Simplex2D(Vec2<float> v)
 {
+	auto ij = Vec2<int>(FastFloor(v.X), FastFloor(v.Y));
+	auto vi = Vec2<float>((float)(v.X - ij.X), (float)(v.Y - ij.Y));
 
+	float t = (vi.X + vi.Y) * Constants::G2;
+	auto v0 = Vec2<float>((float)(vi.X - t), (float)(vi.Y - t));
+
+	ij.X *= Constants::PrimeX;
+	ij.Y *= Constants::PrimeY;
+
+	float n0, n1, n2;
+	float a = 0.5f - v0.X * v0.X - v0.Y * v0.Y;
+	if (a <= 0)
+	{
+		n0 = 0;
+	}
+	else
+	{
+		n0 = (a * a) * (a * a) * GradientCoordinate2D(ij, v0);
+	}
+
+	float c = (float)(2 * (1 - 2 * Constants::G2) * (1 / Constants::G2 - 2)) * t +
+			((float)(-2 * (1 - 2 * Constants::G2) * (1 - 2 * Constants::G2)) + a);
+	if (c < 0)
+	{
+		n2 = 0;
+	}
+	else
+	{
+		auto v2 = Vec2<float>(v0.X + (2*(float)Constants::G2-1),
+							  v0.Y + (2 * (float)Constants::G2 - 1));
+		auto temp = ij;
+		temp.X = temp.X + Constants::PrimeX;
+		temp.Y = temp.Y + Constants::PrimeY;
+		n2 = (c * c) * (c * c) * GradientCoordinate2D(temp, v2);
+	}
+
+	if (v0.Y > v0.X)
+	{
+		auto v1 = Vec2<float>((v0.X + (float)Constants::G2),
+			(v0.Y + ((float)Constants::G2 - 1)));
+		float b = 0.5f - v1.X * v1.X - v1.Y * v1.Y;
+		if (b <= 0)
+		{
+			n1 = 0;
+		}
+		else
+		{
+			auto temp = ij;
+			temp.Y = temp.Y + Constants::PrimeY;
+			n1 = (b * b) * (b * b) * GradientCoordinate2D(temp, v1);
+		}
+	}
+	else
+	{
+		auto v1 = Vec2<float>(v0.X + ((float)Constants::G2 - 1),
+							 (v0.Y + (float)Constants::G2));
+		float b = 0.5f - v1.X * v1.X - v1.Y * v1.Y;
+		if (b <= 0)
+		{
+			n1 = 0;
+		}
+		else
+		{
+			auto temp = ij;
+			temp.Y = temp.Y + Constants::PrimeY;
+			n1 = (b * b) * (b * b) * GradientCoordinate2D(temp, v1);
+		}
+	}
+
+	return (n0 + n1 + n2) * Constants::Simplex2DFinalMultiplier;
 }
 
 float Noise::OpenSimplex2_3D(Vec3<float> v)
 {
+	auto ijk = Vec3<int>(FastRound(v.X), FastRound(v.Y), FastRound(v.Z));
+	auto v0 = Vec3<float>
+		((float)(v.X - ijk.X),
+		(float)(v.Y - ijk.Y),
+		(float)(v.Z - ijk.Z));
 
+	auto NSign = Vec3<int>
+		((int)(-1.0f - v0.X) | 1,
+		(int)(-1.0f - v0.Y) | 1,
+		(int)(-1.0f - v0.Z) | 1);
+
+	auto a0 = Vec3<int>
+			(NSign.X * -v0.X,
+			NSign.Y * -v0.Y,
+			NSign.Z * -v0.Z);
+
+	ijk.X *= Constants::PrimeX;
+	ijk.Y *= Constants::PrimeY;
+	ijk.Z *= Constants::PrimeZ;
+
+	float value = 0;
+	float a = (0.6f - v0.X * v0.X) - (v0.Y * v0.Y + v0.Z * v0.Z);
+	for (int l = 0; true; l++)
+	{
+		if (a > 0)
+		{
+			value += (a * a) * (a * a) * GradientCoordinate3D(ijk, v0);
+		}
+
+		float b = a + 1;
+		auto ijk1 = ijk;
+		auto v1 = v0;
+
+		if (a0.X >= a0.Y && a0.X >= a0.Z)
+		{
+			v1.X += NSign.X;
+			b -= NSign.X * 2 * v1.X;
+			ijk1.X -= NSign.X * Constants::PrimeX;
+		}
+		else if (a0.Y > a0.X && a0.Y > a0.Z)
+		{
+			v1.Y += NSign.Y;
+			b -= NSign.Y * 2 * v1.Y;
+			ijk1.Y -= NSign.Y * Constants::PrimeY;
+		}
+		else
+		{
+			v1.Z += NSign.Z;
+			b -= NSign.Z * 2 * v1.Z;
+			ijk.Z -= NSign.Z * Constants::PrimeZ;
+		}
+
+		if (b > 0)
+		{
+			value += (b * b) * (b * b) * GradientCoordinate3D(ijk1, v1);
+		}
+
+		if (l = 1) break;
+
+		a0.X = 0.5f - a0.X;
+		a0.Y = 0.5f - a0.Y;
+		a0.Z = 0.5f - a0.Z;
+
+		v0.X = NSign.X * a0.X;
+		v0.Y = NSign.Y * a0.Y;
+		v0.Z = NSign.Z * a0.Z;
+
+		a += (0.75f - a0.X) - (a0.Y + a0.Z);
+
+		ijk.X += (NSign.X >> 1) & Constants::PrimeX;
+		ijk.Y += (NSign.Y >> 1) & Constants::PrimeY;
+		ijk.Z += (NSign.Z >> 1) & Constants::PrimeZ;
+
+		State.Seed = ~State.Seed;
+	}
+	return value * Constants::Simplex2_3DFinalMultiplier;
 }
 
 float Noise::OpenSimplex2S_2D(Vec2<float> v)
 {
-
+	return 0;
 }
 
 float Noise::OpenSimplex2S_3D(Vec3<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Cellular2D(Vec2<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Cellular3D(Vec3<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Perlin2D(Vec2<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Perlin3D(Vec3<float> v)
 {
-
+	return 0;
 }
 
 float Noise::ValueCubic2D(Vec2<float> v)
 {
-
+	return 0;
 }
 
 float Noise::ValueCubic3D(Vec3<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Value2D(Vec2<float> v)
 {
-
+	return 0;
 }
 
 float Noise::Value3D(Vec3<float> v)
 {
-
+	return 0;
 }

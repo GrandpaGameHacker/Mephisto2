@@ -3,6 +3,9 @@
 #include <Core/StringUtils.h>
 #include <spdlog/spdlog.h>
 #include <iostream>
+#include <Math/Noise.h>
+#include <Math/Random.h>
+
 std::string Test = "$$\\      $$\\                     $$\\       $$\\             $$\\                $$$$$$\\  \n\
 $$$\\    $$$ |                    $$ |      \\__|            $$ |              $$  __$$\\ \n\
 $$$$\\  $$$$ | $$$$$$\\   $$$$$$\\  $$$$$$$\\  $$\\  $$$$$$$\\ $$$$$$\\    $$$$$$\\  \\__/  $$ |\n\
@@ -29,7 +32,25 @@ int main(int argc, char** argv)
 {
 	std::cout << Test;
 #if _DEBUG
-	spdlog::set_level(spdlog::level::debug);
-	RunTests();
+	//spdlog::set_level(spdlog::level::debug);
+	//RunTests();
 #endif
+	ME::Math::Noise MyNoise;
+	ME::Random::Mersienne MyRandom;
+	MyRandom.Reseed(6969);
+	MyNoise.SetSeed(6969);
+	auto file = std::string("Output.txt");
+	std::filesystem::path filepath = ME::Disk::FromCurrentDirectory(file);
+	std::fstream filestream;
+	ME::Disk::FileCreate(filepath, filestream, true);
+	std::string data = "";
+	for (int i = 0; i < 256*256; i++)
+	{
+		string temp = "";
+		Vec3<float> Coords = Vec3<float>(MyRandom.NextFloat(0.f, 1024.f), MyRandom.NextFloat(0.f, 1024.f), MyRandom.NextFloat(0.f, 1024.f));
+		float x = MyNoise.GetNoise3D(Coords);
+		ME::StringUtils::CastFrom(temp, x);
+		data += temp + "\n";
+	}
+	filestream.write(data.c_str(), data.length());
 }
