@@ -5,7 +5,7 @@
 using namespace std::filesystem;
 using namespace std;
 
-bool ME::Disk::GetFileInformation(path& file, FileInformation& fileInfo)
+bool ME::Disk::GetFileInformation(std::filesystem::path& file, FileInformation& fileInfo)
 {
 	if (PathExists(file) && file.has_filename())
 	{
@@ -115,7 +115,7 @@ path ME::Disk::CurrentDirectory()
 	return current_path();
 }
 
-bool ME::Disk::DirectoryCreate(const path& dir)
+bool ME::Disk::DirectoryCreate(const std::filesystem::path& dir)
 {
 	if (PathExists(dir))
 	{
@@ -129,7 +129,7 @@ bool ME::Disk::DirectoryCreate(const path& dir)
 	return false;
 }
 
-bool ME::Disk::DirectoryCopy(const path& source, const path& destination)
+bool ME::Disk::DirectoryCopy(const std::filesystem::path& source, const std::filesystem::path& destination)
 {
 	if (PathExists(source))
 	{
@@ -150,12 +150,12 @@ bool ME::Disk::DirectoryCopy(const path& source, const path& destination)
 	return false;
 }
 
-bool ME::Disk::PathExists(const path& file_or_dir)
+bool ME::Disk::PathExists(const std::filesystem::path& file_or_dir)
 {
 	return exists(file_or_dir);
 }
 
-bool ME::Disk::PathDelete(const path& to_delete)
+bool ME::Disk::PathDelete(const std::filesystem::path& to_delete)
 {
 	uintmax_t removed = 0;
 	if (PathExists(to_delete))
@@ -173,7 +173,7 @@ bool ME::Disk::PathDelete(const path& to_delete)
 	return bool(removed);
 }
 
-bool ME::Disk::FileCreate(const path& file, fstream& stream, bool bOverwrite)
+bool ME::Disk::FileCreate(const std::filesystem::path& file, fstream& stream, bool bOverwrite)
 {
 	if (!bOverwrite && PathExists(file))
 	{
@@ -194,7 +194,7 @@ bool ME::Disk::FileCreate(const path& file, fstream& stream, bool bOverwrite)
 	return true;
 }
 
-bool ME::Disk::FileCopy(const path& source, const path& destination)
+bool ME::Disk::FileCopy(const std::filesystem::path& source, const std::filesystem::path& destination)
 {
 	bool success = false;
 	if (PathExists(source))
@@ -212,7 +212,7 @@ bool ME::Disk::FileCopy(const path& source, const path& destination)
 	return success;
 }
 
-uint64_t ME::Disk::FileGetSize(const path& file)
+uint64_t ME::Disk::FileGetSize(const std::filesystem::path& file)
 {
 	uint64_t size = NULL;
 	if (!PathExists(file) || !file.has_filename()) return size;
@@ -227,7 +227,7 @@ uint64_t ME::Disk::FileGetSize(const path& file)
 	return size;
 }
 
-vector<path> ME::Disk::FilesIn(const path& dir, bool bRecursive)
+vector<path> ME::Disk::FilesIn(const std::filesystem::path& dir, bool bRecursive)
 {
 	vector<path> found;
 
@@ -250,7 +250,7 @@ vector<path> ME::Disk::FilesIn(const path& dir, bool bRecursive)
 	return found;
 }
 
-path ME::Disk::FilePathNormalize(path& file, bool bAbsolute)
+path ME::Disk::FilePathNormalize(std::filesystem::path& file, bool bAbsolute)
 {
 	path RelPath;
 	try
@@ -268,79 +268,79 @@ path ME::Disk::FilePathNormalize(path& file, bool bAbsolute)
 	return RelPath;
 }
 
-void ME::Disk::Append(path& a, path& b)
+void ME::Disk::Append(std::filesystem::path& a, std::filesystem::path& b)
 {
 	a = path(a.string() + b.string());
 }
 
-void ME::Disk::Append(path& a, string& b)
+void ME::Disk::Append(std::filesystem::path& a, std::string& b)
 {
 	a = path(a.string() + b);
 }
 
-path ME::Disk::FromCurrentDirectory(path& a)
+path ME::Disk::FromCurrentDirectory(std::filesystem::path& a)
 {
 	path p = CurrentDirectory();
 	Append(p, a);
 	return p;
 }
 
-path ME::Disk::FromCurrentDirectory(string& a)
+path ME::Disk::FromCurrentDirectory(std::string& a)
 {
 	path p = CurrentDirectory();
 	Append(p, a);
 	return p;
 }
 
-string ME::Disk::CurrentDirectoryToString()
+std::string ME::Disk::CurrentDirectoryToString()
 {
 	return current_path().string();
 }
 
-bool ME::Disk::DirectoryCreate(const string& dir)
+bool ME::Disk::DirectoryCreate(const std::string& dir)
 {
 	return DirectoryCreate(path(dir));
 }
 
 
-bool ME::Disk::DirectoryCopy(const string& source, const string& destination)
+bool ME::Disk::DirectoryCopy(const std::string& source, const std::string& destination)
 {
 	return DirectoryCopy(path(source), path(destination));
 }
 
-bool ME::Disk::PathExists(const string& file_or_dir)
+bool ME::Disk::PathExists(const std::string& file_or_dir)
 {
 	return PathExists(path(file_or_dir));
 }
 
-bool ME::Disk::PathDelete(const string& to_delete)
+bool ME::Disk::PathDelete(const std::string& to_delete)
 {
 	return PathDelete(path(to_delete));
 }
 
-bool ME::Disk::FileCreate(const string& file, fstream& stream, bool bOverwrite)
+bool ME::Disk::FileCreate(const std::string& file, std::fstream& stream, bool bOverwrite)
 {
 	return FileCreate(path(file), stream, bOverwrite);
 }
 
-bool ME::Disk::FileCopy(const string& src, const string& dest)
+bool ME::Disk::FileCopy(const std::string& src, const std::string& dest)
 {
 	return FileCopy(path(src), path(dest));
 }
 
-uint64_t ME::Disk::FileGetSize(const string& file)
+uint64_t ME::Disk::FileGetSize(const std::string& file)
 {
 	return FileGetSize(path(file));
 }
 
-vector<string> ME::Disk::FilesIn(const string& dir, bool bRecursive)
+std::vector<std::string> ME::Disk::FilesIn(const std::string& dir, bool bRecursive)
 {
-	vector<string> found;
+	std::vector<std::string> found;
 	if (!bRecursive)
 	{
 		for (const auto& item : directory_iterator(dir))
 		{
-			string item_path = path(item).string();
+			std::string item_path = path(item).string();
 			found.push_back(item_path);
 		}
 	}
@@ -348,21 +348,21 @@ vector<string> ME::Disk::FilesIn(const string& dir, bool bRecursive)
 	{
 		for (const auto& item : recursive_directory_iterator(dir))
 		{
-			string item_path = path(item).string();
+			std::string item_path = path(item).string();
 			found.push_back(item_path);
 		}
 	}
 	return found;
 }
 
-string ME::Disk::FilePathNormalize(string& file, bool bAbsolute)
+std::string ME::Disk::FilePathNormalize(std::string& file, bool bAbsolute)
 {
-	auto PathFile = path(file);
+	auto PathFile = std::filesystem::path(file);
 	auto PathResult = FilePathNormalize(PathFile, bAbsolute);
 	return PathResult.string();
 }
 
-void ME::Disk::internal::ProcessError(const string& function_name, filesystem_error& exception)
+void ME::Disk::internal::ProcessError(const std::string& function_name, filesystem_error& exception)
 {
 	auto code = exception.code();
 	spdlog::error("ME::Disk::{} Exception: {} : {}", function_name, exception.what(), code.message());
@@ -373,25 +373,25 @@ void ME::Disk::internal::TestAll()
 	spdlog::debug("Running All ME::Disk Tests... (Filesystem.cpp)");
 
 	spdlog::debug("Testing getting current directory...");
-	path CurrDir1 = CurrentDirectory();
-	string CurrDir2 = CurrentDirectoryToString();
+	std::filesystem::path CurrDir1 = CurrentDirectory();
+	std::string CurrDir2 = CurrentDirectoryToString();
 	MEPH_ASSERT(CurrDir1.string() == CurrDir2);
 
 	spdlog::debug("Testing appending to a path...");
-	path AppendTest = CurrDir1;
-	auto s = string("/testfile.txt");
+	std::filesystem::path AppendTest = CurrDir1;
+	auto s = std::string("/testfile.txt");
 	Append(AppendTest, s);
 	spdlog::debug("Append test1: {}", AppendTest.string());
 	AppendTest = FromCurrentDirectory(s);
 	spdlog::debug("Append test2: {}", AppendTest.string());
 
 	spdlog::debug("Testing create directory...");
-	auto TestDir = path(CurrDir1.string() + "/TestDirectory/");
+	auto TestDir = std::filesystem::path(CurrDir1.string() + "/TestDirectory/");
 	MEPH_ASSERT(DirectoryCreate(TestDir));
 
 	spdlog::debug("Testing create file...");
-	auto TestFile = path(TestDir.string() + "testfile.txt");
-	fstream stream;
+	auto TestFile = std::filesystem::path(TestDir.string() + "testfile.txt");
+	std::fstream stream;
 	MEPH_ASSERT(FileCreate(TestFile, stream, true));
 	spdlog::debug("Testing write to file...");
 	string TestString = "MyTestString";

@@ -665,7 +665,292 @@ float Noise::OpenSimplex2S_2D(Vec2<float> v)
 
 float Noise::OpenSimplex2S_3D(Vec3<float> v)
 {
-	return 0;
+	auto ijk = Vec3<int>(
+		FastFloor(v.X),
+		FastFloor(v.Y),
+		FastFloor(v.Z));
+
+	auto vi = Vec3<float>(
+		(float)(v.X - ijk.X),
+		(float)(v.Y - ijk.Y),
+		(float)(v.Z - ijk.Z));
+
+	ijk = Vec3<int>(
+		vi.X * Constants::PrimeX,
+		vi.Z * Constants::PrimeY,
+		vi.Z * Constants::PrimeZ);
+
+	int SeedOriginal = State.Seed;
+	int Seed0 = SeedOriginal + 1293373;
+
+	auto NMask = Vec3(
+		(int)(-0.5f - vi.X),
+		(int)(-0.5f - vi.Y),
+		(int)(-0.5f - vi.Z));
+
+	auto v0 = Vec3<float>(
+		vi.X + NMask.X,
+		vi.Y + NMask.Y,
+		vi.Z + NMask.Z);
+
+	float a0 = 0.75f - v0.X * v0.X - v0.Y * v0.Y - v0.Z * v0.Z;
+
+	auto temp = Vec3<int>(
+		ijk.X + (NMask.X & Constants::PrimeX),
+		ijk.Y + (NMask.Y & Constants::PrimeY),
+		ijk.Z + (NMask.Z & Constants::PrimeZ));
+	State.Seed = SeedOriginal;
+	float value = (a0 * a0) * (a0 * a0) * GradientCoordinate3D(temp, v0);
+
+	auto v1 = Vec3<float>(
+		vi.X - 0.5f,
+		vi.Y - 0.5f,
+		vi.Z - 0.5f
+		);
+
+	float a1 = 0.75f - v1.X * v1.X - v1.Y * v1.Y - v1.Z * v1.Z;
+	temp = Vec3<int>(
+		ijk.X + Constants::PrimeX,
+		ijk.Y + Constants::PrimeY,
+		ijk.Z + Constants::PrimeZ);
+	State.Seed = Seed0;
+	value += (a1 * a1) * (a1 * a1) * GradientCoordinate3D(temp, v1);
+
+	Vec3<float> AFlipMask0;
+	Vec3<float> AFlipMask1;
+
+	AFlipMask0.X = ((NMask.X | 1) << 1) * v1.X;
+	AFlipMask0.Y= ((NMask.Y | 1) << 1) * v1.Y;
+	AFlipMask0.Z = ((NMask.Z | 1) << 1) * v1.Z;
+	AFlipMask1.X = (-2 - (NMask.X << 2)) * v1.X - 1.0f;
+	AFlipMask1.Y = (-2 - (NMask.Y << 2)) * v1.Y - 1.0f;
+	AFlipMask1.Z = (-2 - (NMask.Z << 2)) * v1.Z - 1.0f;
+
+	bool skip5 = false;
+	float a2 = AFlipMask0.Z + a0;
+	if (a2 > 0)
+	{
+		temp = Vec3<int>(
+			ijk.X + (~NMask.X & Constants::PrimeX),
+			ijk.Y + (NMask.Y & Constants::PrimeY),
+			ijk.Z + (NMask.Z & Constants::PrimeZ));
+
+			auto v2 = Vec3<float>(
+				v0.X - (NMask.X | 1),
+				v0.Y,
+				v0.Z);
+
+		State.Seed = SeedOriginal;
+		value += (a2 * a2) * (a2 * a2) * GradientCoordinate3D(temp, v2);
+	}
+	else
+	{
+		float a3 = AFlipMask0.Y + AFlipMask0.Z + a0;
+		if (a3 > 0)
+		{
+			auto v3 = Vec3<float>(
+				v0.X,
+				v0.Y + (NMask.Y | 1),
+				v0.Z + (NMask.Z | 1));
+
+			temp = Vec3<int>(
+				ijk.X + (NMask.X & Constants::PrimeX),
+				ijk.Y + (~NMask.Y & Constants::PrimeY),
+				ijk.Z + (~NMask.Z & Constants::PrimeZ));
+
+			value += (a3 * a3) * (a3 * a3) * GradientCoordinate3D(temp, v3);
+		}
+
+		float a4 = AFlipMask1.X + a1;
+		if (a4 > 0)
+		{
+			auto v4 = Vec3<float>(
+				(NMask.X | 1) + v1.X,
+				v1.Y,
+				v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + (NMask.X & (Constants::PrimeX* 2)),
+				ijk.Y + Constants::PrimeY,
+				ijk.Z + Constants::PrimeZ);
+
+			State.Seed = Seed0;
+			value += (a4 * a4) * (a4 * a4) * GradientCoordinate3D(temp, v4);
+			skip5 = true;
+		}
+	}
+
+	bool skip9 = false;
+	float a6 = AFlipMask0.Y + a0;
+	if (a6 > 0)
+	{
+		auto v6 = Vec3<float>(
+			v0.X,
+			v0.Y - (NMask.Y | 1),
+			v0.Z);
+
+		temp = Vec3<int>(
+			ijk.X + (NMask.X & Constants::PrimeX),
+			ijk.Y + (~NMask.Y & Constants::PrimeY),
+			ijk.Z + (NMask.Y & Constants::PrimeZ));
+
+		State.Seed = SeedOriginal;
+		value += (a6 * a6) * (a6 * a6) * GradientCoordinate3D(temp, v6);
+	}
+	else
+	{
+		float a7 = AFlipMask0.X + AFlipMask0.Z + a0;
+		if (a7 > 0)
+		{
+			auto v7 = Vec3<float>(
+				v0.X - (NMask.X | 1),
+				v0.Y,
+				v0.Z - (NMask.Z | 1));
+
+			temp = Vec3<int>(ijk.X + (~NMask.X & Constants::PrimeX),
+				ijk.Y + (NMask.Y & Constants::PrimeY),
+				ijk.Z + (~NMask.Z & Constants::PrimeZ));
+
+			State.Seed = SeedOriginal;
+			value += (a7 * a7) * (a7 * a7) * GradientCoordinate3D(temp, v7);
+		}
+
+		float a8 = AFlipMask1.Y + a1;
+		if (a8 > 0)
+		{
+			auto v8 = Vec3<float>(
+				v1.X,
+				(NMask.Y | 1) + v1.Y,
+				v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + Constants::PrimeX,
+				ijk.Y + (NMask.Y & (Constants::PrimeY << 1)),
+				ijk.Z + Constants::PrimeZ);
+
+			State.Seed = Seed0;
+			value += (a8 * a8) * (a8 * a8) * GradientCoordinate3D(temp, v8);
+			skip9 = true;
+		}
+	}
+
+	bool skipD = false;
+	float aA = AFlipMask0.Z + a0;
+	if (aA > 0)
+	{
+		auto vA = Vec3<float>(
+			v0.X,
+			v0.Y,
+			v0.Z - (NMask.Z | 1));
+
+		temp = Vec3<int>(
+			ijk.X + (NMask.X & Constants::PrimeX),
+			ijk.Y + (NMask.Y & Constants::PrimeY),
+			ijk.Z + (~NMask.Z & Constants::PrimeZ));
+
+		State.Seed = SeedOriginal;
+		value += (aA * aA) * (aA * aA) * GradientCoordinate3D(temp, vA);
+	}
+	else
+	{
+		float aB = AFlipMask0.X + AFlipMask0.Y + a0;
+		if (aB > 0)
+		{
+			auto vB = Vec3<float>(
+				v0.X - (NMask.X | 1),
+				v0.Y - (NMask.Y | 1),
+				v0.Z - v0.Z);
+
+			temp = Vec3<int>(
+				ijk.X + (~NMask.X & Constants::PrimeX),
+				ijk.Y + (~NMask.Y & Constants::PrimeY),
+				ijk.Z + (NMask.Z & Constants::PrimeZ));
+
+			State.Seed = SeedOriginal;
+			value += (aB * aB) * (aB * aB) * GradientCoordinate3D(temp, vB);
+		}
+
+		float aC = AFlipMask1.Z + a1;
+		if (aC > 0)
+		{
+			auto vC = Vec3<float>(
+				v1.X,
+				v1.Y,
+				v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + Constants::PrimeX,
+				ijk.Y + Constants::PrimeY,
+				ijk.Z + (NMask.Z & (Constants::PrimeZ << 1)));
+
+			State.Seed = Seed0;
+			value += (aC * aC) * (aC * aC) * GradientCoordinate3D(temp, vC);
+			skipD = true;
+		}
+	}
+
+	if (!skip5)
+	{
+		float a5 = AFlipMask1.Y + AFlipMask1.Z + a1;
+		if (a5 > 0)
+		{
+			auto v5 = Vec3<float>(
+				v1.X,
+				(NMask.Y | 1) + v1.Y,
+				(NMask.Z | 1) + v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + Constants::PrimeX,
+				ijk.Y + (NMask.Y & (Constants::PrimeY << 1)),
+				ijk.Z + (NMask.Z & (Constants::PrimeZ << 1)));
+
+			State.Seed = Seed0;
+			value += (a5 * a5) * (a5 * a5) * GradientCoordinate3D(temp, v5);
+		}
+	}
+
+	if (!skip9)
+	{
+		float a9 = AFlipMask1.X + AFlipMask1.Z + a1;
+		if (a9 > 0)
+		{
+			auto v9 = Vec3<float>(
+				(NMask.X | 1) + v1.X,
+				v1.Y,
+				(NMask.Z | 1) + v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + (NMask.X & (Constants::PrimeX * 2)),
+				ijk.Y + Constants::PrimeY,
+				ijk.Z + (NMask.Z & (Constants::PrimeZ << 1)));
+			
+			State.Seed = Seed0;
+			value += (a9 * a9) * (a9 * a9) * GradientCoordinate3D(temp, v9);
+		}
+	}
+
+	if (!skipD)
+	{
+		float aD = AFlipMask1.X + AFlipMask1.Y + a1;
+		if (aD > 0)
+		{
+
+			auto vD = Vec3<float>(
+				(NMask.X | 1) + v1.X,
+				(NMask.Y | 1) + v1.Y,
+				v1.Z);
+
+			temp = Vec3<int>(
+				ijk.X + (NMask.X & (Constants::PrimeX << 1)),
+				ijk.Y + (NMask.Y & (Constants::PrimeY << 1)),
+				ijk.Z + Constants::PrimeZ);
+
+			State.Seed = Seed0;
+			value += (aD * aD) * (aD * aD) * GradientCoordinate3D(temp, vD);
+		}
+	}
+	State.Seed = SeedOriginal;
+	return value * Constants::OpenSimplex2S_3DFinalMultiplier;
 }
 
 float Noise::Cellular2D(Vec2<float> v)

@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PublicIncludeDirectories>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PublicIncludeDirectories>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PublicIncludeDirectories>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PublicIncludeDirectories>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(PublicIncludeDirectories)</PublicIncludeDirectories>
-    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\Source;C:\Users\Samson\Documents\Personal Projects\Mephisto2\Mephisto2\ThirdParty;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -187,6 +187,7 @@
     <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
+    <ClCompile Include="Source\Graphics\RenderThread.cpp" />
     <ClCompile Include="Source\Math\Noise.cpp" />
     <ClCompile Include="Source\World\IScene.cpp" />
     <ClCompile Include="Source\World\IWorld.cpp" />
