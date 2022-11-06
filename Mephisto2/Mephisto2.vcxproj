@@ -160,7 +160,12 @@
     <ClInclude Include="Source\Graphics\IDrawable.h" />
     <ClInclude Include="Source\Core\Component\IComponent.h" />
     <ClInclude Include="Source\Core\Object\IObject.h" />
+    <ClInclude Include="Source\Input\IGamepadListener.h" />
+    <ClInclude Include="Source\Input\IKeyboardListener.h" />
+    <ClInclude Include="Source\Input\IMouseListener.h" />
+    <ClInclude Include="Source\Math\3D\MatrixConstants.cpp" />
     <ClInclude Include="Source\Math\3D\Vector.inl" />
+    <ClInclude Include="Source\Math\Math.h" />
     <ClInclude Include="Source\Math\Noise.h" />
     <ClInclude Include="Source\Math\NoiseConstants.h" />
     <ClInclude Include="Source\Thread\Job.h" />
@@ -176,9 +181,9 @@
     <ClInclude Include="Source\Graphics\ImGuiBackend\imgui_impl_sdl.h" />
     <ClInclude Include="Source\Graphics\IWindow.h" />
     <ClInclude Include="Source\Graphics\RenderQueue.h" />
-    <ClInclude Include="Source\Input\IJoystick.h" />
-    <ClInclude Include="Source\Input\IKeyboard.h" />
-    <ClInclude Include="Source\Input\IMouse.h" />
+    <ClInclude Include="Source\Input\Gamepad.h" />
+    <ClInclude Include="Source\Input\Keyboard.h" />
+    <ClInclude Include="Source\Input\Mouse.h" />
     <ClInclude Include="Source\Math\Random.h" />
     <ClInclude Include="Source\Types.h" />
     <ClInclude Include="ThirdParty\Threadpool\ThreadPool.h" />
@@ -188,6 +193,7 @@
     <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
+    <ClCompile Include="Source\Input\Mouse.cpp" />
     <ClCompile Include="Source\Math\Noise.cpp" />
     <ClCompile Include="Source\Thread\Job.cpp" />
     <ClCompile Include="Source\World\IScene.cpp" />
@@ -199,6 +205,9 @@
     <ClCompile Include="Source\Graphics\IWindow.cpp" />
     <ClCompile Include="Source\Math\Random.cpp" />
     <ClCompile Include="ThirdParty\Threadpool\ThreadPool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Math\3D\Matrix.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

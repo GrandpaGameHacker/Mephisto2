@@ -54,13 +54,13 @@
     <ClInclude Include="Source\Core\MephistoAssert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Input\IMouse.h">
+    <ClInclude Include="Source\Input\Mouse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Input\IKeyboard.h">
+    <ClInclude Include="Source\Input\Keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Input\IJoystick.h">
+    <ClInclude Include="Source\Input\Gamepad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\World\IWorld.h">
@@ -94,6 +94,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Thread\Job.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\3D\MatrixConstants.cpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Math\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input\IMouseListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input\IKeyboardListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Input\IGamepadListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -143,5 +158,13 @@
     <ClCompile Include="Source\Thread\Job.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Input\Mouse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Math\3D\Matrix.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -22,8 +22,4 @@ int main(int argc, char** argv)
 	spdlog::set_level(spdlog::level::debug);
 	RunTests();
 #endif
-	ME::Graphics::RenderQueue RQ;
-	auto future = RQ.Execute([] { return 69; });
-	auto f = future.get();
-	std::cout << f;
 };
