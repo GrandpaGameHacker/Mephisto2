@@ -4,4 +4,5 @@ class IApplication
 public:
 	IApplication();
 	virtual ~IApplication();
+
 };

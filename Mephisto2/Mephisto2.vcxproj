@@ -175,7 +175,7 @@
     <ClInclude Include="Source\Graphics\ImGuiBackend\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="Source\Graphics\ImGuiBackend\imgui_impl_sdl.h" />
     <ClInclude Include="Source\Graphics\IWindow.h" />
-    <ClInclude Include="Source\Graphics\RenderThread.h" />
+    <ClInclude Include="Source\Graphics\RenderQueue.h" />
     <ClInclude Include="Source\Input\IJoystick.h" />
     <ClInclude Include="Source\Input\IKeyboard.h" />
     <ClInclude Include="Source\Input\IMouse.h" />
@@ -188,8 +188,8 @@
     <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
-    <ClCompile Include="Source\Graphics\RenderThread.cpp" />
     <ClCompile Include="Source\Math\Noise.cpp" />
+    <ClCompile Include="Source\Thread\Job.cpp" />
     <ClCompile Include="Source\World\IScene.cpp" />
     <ClCompile Include="Source\World\IWorld.cpp" />
     <ClCompile Include="Source\Core\MephistoAssert.cpp" />

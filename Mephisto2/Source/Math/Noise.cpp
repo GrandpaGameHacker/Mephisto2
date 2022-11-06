@@ -1,8 +1,6 @@
 #include "Noise.h"
 #include "NoiseConstants.h"
 #include "Types.h"
-#include <cfloat>
-#include <cstdint>
 #pragma warning(disable:4244)
 namespace
 {
@@ -44,7 +42,7 @@ void Noise::SetDomainWarpType(EDomainWarpType Type)
 	Config.DomainWarpType = Type;
 }
 
-void Noise::SetCullularDistanceFunction(ECellularDistanceFunction Function)
+void Noise::SetCellularDistanceFunction(ECellularDistanceFunction Function)
 {
 	Config.CellularDistanceFunc = Function;
 }
@@ -1008,7 +1006,7 @@ float Noise::OpenSimplex2S_3D(Vec3<float> v)
 float Noise::Cellular2D(Vec2<float> v)
 {
 	auto vr = FastRound(v);
-	auto vdist = Vec2<float>(FLT_MAX, FLT_MAX);
+	auto vdist = Vec2<float>(Constants::FloatMax, Constants::FloatMax);
 	int ClosestHash = 0;
 
 	float CellularJitter = 0.5f * State.CellularJitterModifier;
@@ -1168,4 +1166,18 @@ float Noise::Value2D(Vec2<float> v)
 float Noise::Value3D(Vec3<float> v)
 {
 	return 0;
+}
+
+
+void Noise::DomainWarpSingle3D(Vec3<float> v)
+{
+
+}
+void Noise::DomainWarpFractalProgressive3D(Vec3<float> v)
+{
+
+}
+void Noise::DomainWarpFractalIndependent3D(Vec3<float> v)
+{
+
 }

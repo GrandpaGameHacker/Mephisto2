@@ -36,7 +36,7 @@
     <ClInclude Include="Source\Assets\IAsset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\RenderThread.h">
+    <ClInclude Include="Source\Graphics\RenderQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ThirdParty\Threadpool\ThreadPool.h">
@@ -140,7 +140,7 @@
     <ClCompile Include="Source\Math\Noise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Graphics\RenderThread.cpp">
+    <ClCompile Include="Source\Thread\Job.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

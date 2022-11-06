@@ -22,7 +22,7 @@ namespace ME::Math::Constants
 	constexpr float Simplex2_3DFinalMultiplier = 32.69428253173828125f;
 	constexpr float OpenSimplex2S_2DFinalMultiplier = 18.24196194486065f;
 	constexpr float OpenSimplex2S_3DFinalMultiplier = 9.046026385208288f;
-	
+	constexpr float FloatMax = 3.402823466e+38F;
 	static const float Gradients2D[] =
 	{
 		0.130526192220052f, 0.99144486137381f, 0.38268343236509f, 0.923879532511287f, 0.608761429008721f, 0.793353340291235f, 0.793353340291235f, 0.608761429008721f,

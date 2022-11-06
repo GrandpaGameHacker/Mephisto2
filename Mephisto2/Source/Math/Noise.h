@@ -150,7 +150,7 @@ namespace ME::Math
 		void SetRotation3DType(ERotation3DType Type);
 		void SetFractalType(EFractalType Type);
 		void SetDomainWarpType(EDomainWarpType Type);
-		void SetCullularDistanceFunction(ECellularDistanceFunction Function);
+		void SetCellularDistanceFunction(ECellularDistanceFunction Function);
 		void SetCellularReturnType(ECellularReturnType ReturnType);
 
 		void SetSeed(int seed);

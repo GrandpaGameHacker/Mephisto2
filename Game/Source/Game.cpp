@@ -5,7 +5,7 @@
 #include <iostream>
 #include <Math/Noise.h>
 #include <Math/Random.h>
-#include <Graphics/RenderThread.h>
+#include <Graphics/RenderQueue.h>
 
 void RunTests()
 {
@@ -22,8 +22,8 @@ int main(int argc, char** argv)
 	spdlog::set_level(spdlog::level::debug);
 	RunTests();
 #endif
-
-	ME::Graphics::RenderThread* RT = new ME::Graphics::RenderThread();
-	auto f = ME::Thread::Job<>([](RenderThread* RT;) {});
-
-}
+	ME::Graphics::RenderQueue RQ;
+	auto future = RQ.Execute([] { return 69; });
+	auto f = future.get();
+	std::cout << f;
+};
