@@ -197,8 +197,14 @@ namespace ME::Math
 		int   CastFloat2Int(float in);
 		float InverseSquareRoot(float in);
 		float FastSquareRoot(float in);
+
 		float FastFloor(float in);
+		Vec2<float> FastFloor(Vec2<float> In);
+		Vec3<float> FastFloor(Vec3<float> in);
+
 		float FastRound(float in);
+		Vec2<float> FastRound(Vec2<float> in);
+		Vec3<float> FastRound(Vec3<float> in);
 		float Lerp(float a, float b, float t);
 		float CubicLerp(float a, float b, float c,float d, float t);
 		float InterpolateHermite(float t);
@@ -231,15 +237,24 @@ namespace ME::Math
 		float OpenSimplex2_3D(Vec3<float> v);
 		float OpenSimplex2S_2D(Vec2<float> v);
 		float OpenSimplex2S_3D(Vec3<float> v);
+
 		float Cellular2D(Vec2<float> v);
 		float Cellular3D(Vec3<float> v);
+
 		float Perlin2D(Vec2<float> v);
 		float Perlin3D(Vec3<float> v);
+
 		float ValueCubic2D(Vec2<float> v);
 		float ValueCubic3D(Vec3<float> v);	
 		float Value2D(Vec2<float> v);
 		float Value3D(Vec3<float> v);
 
+		void DomainWarpSingle2D(Vec2<float> v);
+		void DomainWarpFractalProgressive2D(Vec2<float> v);
+		void DomainWarpFractalIndependent2D(Vec2<float> v);
 
+		void DomainWarpSingle3D(Vec3<float> v);
+		void DomainWarpFractalProgressive3D(Vec3<float> v);
+		void DomainWarpFractalIndependent3D(Vec3<float> v);
 	};
 }

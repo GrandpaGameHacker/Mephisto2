@@ -22,4 +22,8 @@ int main(int argc, char** argv)
 	spdlog::set_level(spdlog::level::debug);
 	RunTests();
 #endif
+
+	ME::Graphics::RenderThread* RT = new ME::Graphics::RenderThread();
+	auto f = ME::Thread::Job<>([](RenderThread* RT;) {});
+
 }

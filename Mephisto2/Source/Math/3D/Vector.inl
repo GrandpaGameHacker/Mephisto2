@@ -12,6 +12,13 @@ struct Vec2
 	{
 	}
 
+	template <typename Cast>
+	Vec2(Vec2<Cast> arg)
+	{
+		X = arg.X;
+		Y = arg.Y;
+	}
+
 	T X, Y;
 };
 
@@ -26,6 +33,14 @@ struct Vec3
 	Vec3(T x, T y, T z) :
 		X(x), Y(y), Z(z)
 	{
+	}
+
+	template <typename Cast>
+	Vec3(Vec3<Cast> arg)
+	{
+		X = arg.X;
+		Y = arg.Y;
+		Z = arg.Z;
 	}
 
 	T X, Y, Z;
@@ -43,5 +58,17 @@ struct Vec4
 		X(x), Y(y), Z(z), W(w)
 	{
 	}
+
+	template <typename Cast>
+	Vec4(Vec4<Cast> arg)
+	{
+		X = arg.X;
+		Y = arg.Y;
+		Z = arg.Z;
+		W = arg.W;
+	}
+
+
+
 	T X, Y, Z, W;
 };

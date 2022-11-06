@@ -1,6 +1,9 @@
 #include "Noise.h"
 #include "NoiseConstants.h"
 #include "Types.h"
+#include <cfloat>
+#include <cstdint>
+#pragma warning(disable:4244)
 namespace
 {
 	using namespace ME::Math;
@@ -150,12 +153,35 @@ float Noise::GetNoise3D(Vec3<float>& v)
 
 void Noise::DomainWarp2D(Vec2<float>& v)
 {
-
+	switch (Config.FractalType)
+	{
+	default:
+		//DomainWarpSingle2D(v);
+		break;
+	case EFractalType::DomainWarpProgressive:
+		//DomainWarpFractalProgressive2D(v);
+		break;
+	case EFractalType::DomainWarpIndependent:
+		//DomainWarpFractalIndependent2D(v);
+		break;
+	}
 }
+
 
 void Noise::DomainWarp3D(Vec3<float>& v)
 {
-
+	switch (Config.FractalType)
+	{
+	default:
+		DomainWarpSingle3D(v);
+		break;
+	case EFractalType::DomainWarpProgressive:
+		DomainWarpFractalProgressive3D(v);
+		break;
+	case EFractalType::DomainWarpIndependent:
+		DomainWarpFractalIndependent3D(v);
+		break;
+	}
 }
 
 float Noise::FastMin(const Vec2<float>& vIn)
@@ -211,9 +237,38 @@ float Noise::FastFloor(float in)
 	return (in >= 0 ? (int)in : (int)in - 1);
 }
 
+Vec2<float> Noise::FastFloor(Vec2<float> in)
+{
+	in.X = (in.X >= 0 ? (int)in.X : (int)in.X - 1);
+	in.Y = (in.X >= 0 ? (int)in.X : (int)in.X - 1);
+	return in;
+}
+
+Vec3<float> Noise::FastFloor(Vec3<float> in)
+{
+	in.X = (in.X >= 0 ? (int)in.X : (int)in.X - 1);
+	in.Y = (in.X >= 0 ? (int)in.X : (int)in.X - 1);
+	in.Z = (in.Z >= 0 ? (int)in.Z : (int)in.Z - 1);
+	return in;
+}
+
 float Noise::FastRound(float in)
 {
 	return in >= 0 ? (int)(in + 0.5f) : (int)(in - 0.5f);
+}
+
+Vec2<float> Noise::FastRound(Vec2<float> in)
+{
+	in.X = in.X >= 0 ? (int)(in.X + 0.5f) : (int)(in.X - 0.5f);
+	in.Y = in.Y >= 0 ? (int)(in.Y + 0.5f) : (int)(in.Y- 0.5f);
+	return in;
+}
+Vec3<float> Noise::FastRound(Vec3<float> in)
+{
+	in.X = in.X >= 0 ? (int)(in.X + 0.5f) : (int)(in.X - 0.5f);
+	in.Y = in.Y >= 0 ? (int)(in.Y + 0.5f) : (int)(in.Y - 0.5f);
+	in.Z = in.Z >= 0 ? (int)(in.Z + 0.5f) : (int)(in.Z - 0.5f);
+	return in;
 }
 
 float Noise::Lerp(float a, float b, float t)
@@ -367,7 +422,7 @@ void Noise::GradientCoordinateDual3D(Vec3<int> vPrimed, Vec3<float> vIn, Vec3<fl
 
 float Noise::Simplex2D(Vec2<float> v)
 {
-	auto ij = Vec2<int>(FastFloor(v.X), FastFloor(v.Y));
+	auto ij = FastFloor(v);
 	auto vi = Vec2<float>((float)(v.X - ij.X), (float)(v.Y - ij.Y));
 
 	float t = (vi.X + vi.Y) * Constants::G2;
@@ -521,7 +576,7 @@ float Noise::OpenSimplex2_3D(Vec3<float> v)
 
 float Noise::OpenSimplex2S_2D(Vec2<float> v)
 {
-	auto ij = Vec2<int>(FastFloor(v.X), FastFloor(v.Y));
+	auto ij = FastFloor(v);
 	auto vi = Vec2<float>((float)(v.X - ij.X), (float)(v.Y - ij.Y));
 	
 	ij.X *= Constants::PrimeX;
@@ -665,10 +720,7 @@ float Noise::OpenSimplex2S_2D(Vec2<float> v)
 
 float Noise::OpenSimplex2S_3D(Vec3<float> v)
 {
-	auto ijk = Vec3<int>(
-		FastFloor(v.X),
-		FastFloor(v.Y),
-		FastFloor(v.Z));
+	Vec3<int> ijk = FastFloor(v);
 
 	auto vi = Vec3<float>(
 		(float)(v.X - ijk.X),
@@ -955,7 +1007,132 @@ float Noise::OpenSimplex2S_3D(Vec3<float> v)
 
 float Noise::Cellular2D(Vec2<float> v)
 {
-	return 0;
+	auto vr = FastRound(v);
+	auto vdist = Vec2<float>(FLT_MAX, FLT_MAX);
+	int ClosestHash = 0;
+
+	float CellularJitter = 0.5f * State.CellularJitterModifier;
+
+	int xPrimed = (vr.X - 1) * Constants::PrimeX;
+	int yPrimedBase = (vr.Y - 1) * Constants::PrimeY;
+
+	switch (Config.CellularDistanceFunc)
+	{
+	default:
+	case ECellularDistanceFunction::Euclidean:
+	case ECellularDistanceFunction::EuclideanSquared:
+		for (int xi = vr.X - 1; xi <= vr.X + 1; xi++)
+		{
+			int yPrimed = yPrimedBase;
+			for (int yi = vr.Y - 1; yi < vr.Y + 1; yi++)
+			{
+				int Hash = Hash2D({ xPrimed, yPrimed });
+				int idx = Hash & (255 << 1);
+				auto vec = Vec2<float>(
+					(float)(xi - v.X) + Constants::RandVecs2D[idx] * CellularJitter,
+					(float)(yi - v.Y) + Constants::RandVecs2D[idx | 1] * CellularJitter);
+				float NewDistance = vec.X * vec.X + vec.Y * vec.Y;
+
+				vdist.Y = FastMax({FastMin({ vdist.Y, NewDistance }), vdist.X
+			});
+				if (NewDistance < vdist.X)
+				{
+					vdist.X = NewDistance;
+					ClosestHash = Hash;
+				}
+				yPrimed += Constants::PrimeY;
+			}
+			xPrimed += Constants::PrimeY;
+		}
+		break;
+
+	case ECellularDistanceFunction::ManHatten:
+		for (int xi = vr.X - 1; xi <= vr.X + 1; xi++)
+		{
+			int yPrimed = yPrimedBase;
+
+			for (int yi = vr.Y - 1; yi < vr.Y + 1; yi++)
+			{
+				int Hash = Hash2D({ xPrimed, yPrimed });
+				int idx = Hash & (255 << 1);
+
+				auto vec = Vec2<float>(
+					(float)(xi - v.X) + Constants::RandVecs2D[idx] * CellularJitter,
+					(float)(yi - v.Y) + Constants::RandVecs2D[idx | 1] * CellularJitter);
+
+				float NewDistance = FastAbs(vec.X) + FastAbs(vec.Y);
+
+				vdist.Y = FastMax({FastMin({ vdist.Y, NewDistance }), vdist.X
+			});
+				if (NewDistance < vdist.X)
+				{
+					vdist.X = NewDistance;
+					ClosestHash = Hash;
+				}
+				yPrimed += Constants::PrimeY;
+			}
+			xPrimed += Constants::PrimeY;
+		}
+		break;
+	case ECellularDistanceFunction::Hybrid:
+		for (int xi = vr.X - 1; xi <= vr.X + 1; xi++)
+		{
+			int yPrimed = yPrimedBase;
+
+			for (int yi = vr.Y - 1; yi < vr.Y + 1; yi++)
+			{
+				int Hash = Hash2D({ xPrimed, yPrimed });
+				int idx = Hash & (255 << 1);
+
+				auto vec = Vec2<float>(
+					(float)(xi - v.X) + Constants::RandVecs2D[idx] * CellularJitter,
+					(float)(yi - v.Y) + Constants::RandVecs2D[idx | 1] * CellularJitter);
+				float NewDistance = (FastAbs(vec.X) + FastAbs(vec.Y)) + (vec.X * vec.X + vec.Y * vec.Y);
+
+
+				vdist.Y = FastMax({FastMin({ vdist.Y, NewDistance }), vdist.X});
+				if (NewDistance < vdist.X)
+				{
+					vdist.X = NewDistance;
+					ClosestHash = Hash;
+				}
+				yPrimed += Constants::PrimeY;
+			}
+			xPrimed += Constants::PrimeY;
+		}
+		break;
+	}
+
+	if (Config.CellularDistanceFunc == ECellularDistanceFunction::Euclidean && (
+		Config.CellularReturnType == ECellularReturnType::Distance
+		|| Config.CellularReturnType == ECellularReturnType::Distance2))
+	{
+		vdist.X = FastSquareRoot(vdist.X);
+		if (Config.CellularReturnType == ECellularReturnType::Distance2)
+		{
+			vdist.Y = FastSquareRoot(vdist.Y);
+		}
+	}
+
+	switch (Config.CellularReturnType)
+	{
+	case ECellularReturnType::CellValue:
+		return ClosestHash * (1 / Constants::HashFloatConst);
+	case ECellularReturnType::Distance:
+		return vdist.X - 1;
+	case ECellularReturnType::Distance2:
+		return vdist.Y - 1;
+	case ECellularReturnType::Distance2Add:
+		return (vdist.Y + vdist.X) * 0.5f - 1;
+	case ECellularReturnType::Distance2Sub:
+		return vdist.Y - vdist.X - 1;
+	case ECellularReturnType::Distance2Mul:
+		return vdist.Y * vdist.X * 0.5f - 1;
+	case ECellularReturnType::Distance2Div:
+		return vdist.X / vdist.Y - 1;
+	default:
+		return 0;
+	}
 }
 
 float Noise::Cellular3D(Vec3<float> v)
