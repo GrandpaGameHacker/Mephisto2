@@ -8,7 +8,7 @@ public:
 	IWindow();
 	virtual ~IWindow();
 	bool operator==(const IWindow& RHS);
-	virtual void Tick();
+	void Tick();
 	virtual void Draw() = 0;
 	bool IsEnabled() { return bEnabled; };
 	bool ToggleEnabled() { bEnabled = !bEnabled; return bEnabled; }

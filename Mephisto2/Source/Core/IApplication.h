@@ -21,7 +21,9 @@ public:
 	IApplication() : Rect(WindowRect::GetDefault())
 	{};
 
-	virtual ~IApplication() {};
+	virtual ~IApplication()
+	{
+	};
 	
 	virtual bool Initialize(const std::string& Title, WindowRect& WinRect, uint32 flags);
 	virtual void SetVisibility(bool bShow);

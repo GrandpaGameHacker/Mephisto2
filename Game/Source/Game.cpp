@@ -31,5 +31,6 @@ int main(int argc, char** argv)
 	SDL_SetMainReady();
 	App application;
 	application.Begin();
+	application.~App();
 	return 0;
 };

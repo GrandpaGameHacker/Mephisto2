@@ -7,6 +7,7 @@
 #include <chrono>
 #include <Thread/Job.h>
 #include <spdlog/spdlog.h>
+#include <imgui.h>
 #include <SDL2/SDL.h>
 
 namespace ME::Graphics
@@ -29,9 +30,7 @@ namespace ME::Graphics
 				WindowContext = Window;});
 		};
 
-		~RenderQueue()
-		{
-		};
+		~RenderQueue();
 
 		template <typename F, typename... Args,
 			std::enable_if_t<std::is_invocable_v<F&&, Args &&...>, int> = 0>
@@ -45,12 +44,15 @@ namespace ME::Graphics
 		const SDL_GLContext GetContext() { return GLContext; }
 
 		bool SetupOpenGL();
+		void SetupImGui();
+		void ImGuiProcessEvent(SDL_Event* event);
 		void NewFrame();
 		void Swap();
 	protected:
 		std::unique_ptr<ME::Thread::JobQueue> Queue;
 		SDL_GLContext GLContext;
 		SDL_Window* WindowContext;
+		ImGuiContext* GUIContext;
 
 	};
 

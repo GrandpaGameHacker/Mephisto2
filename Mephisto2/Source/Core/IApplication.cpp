@@ -7,6 +7,7 @@
 #include <Input/Mouse.h>
 #include <Input/IKeyboardListener.h>
 #include <Input/IMouseListener.h>
+#include <Graphics/ImGuiBackend/imgui_impl_sdl.h>
 
 #include <chrono>
 
@@ -39,7 +40,9 @@ bool IApplication::Initialize(const std::string& Title, WindowRect& WinRect, uin
     }
 
     Renderer = std::make_unique<ME::Graphics::RenderQueue>(Window);
+
     Renderer->SetupOpenGL();
+    Renderer->SetupImGui();
     GetTimeSinceStart();
     return true;
 }
@@ -104,6 +107,7 @@ void IApplication::Begin()
 
         while (SDL_PollEvent(&event))
         {
+            ImGui_ImplSDL2_ProcessEvent(&event);
             EventLoop(&event);
         }
         ME::Input::Mouse::Get()->OnStartFrame();
@@ -111,7 +115,12 @@ void IApplication::Begin()
         Renderer->NewFrame();
         Tick(GetDeltaTime());
         Renderer->Swap();
+        ME::Thread::SleepFor(1);
     }
+	Renderer.reset();
+	ThrdPool.~thread_pool();
+	SDL_DestroyWindow(Window);
+	SDL_Quit();
 }
 
 void IApplication::ResizeHandler(SDL_Event* event)
@@ -122,6 +131,7 @@ void IApplication::EventLoop(SDL_Event* event)
 {
     Vec2<float> pos;
     Vec2<float> scrollAmount;
+    Renderer->ImGuiProcessEvent(event);
     switch (event->type)
     {
     case SDL_QUIT:

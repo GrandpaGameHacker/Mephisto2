@@ -25,7 +25,7 @@ void ME::Thread::JobQueue::Runner()
 				return !Jobs.empty() || bStopJobs;
 			});
 
-		if (bStopJobs && Jobs.empty())
+		if (bStopJobs)
 			return;
 
 		auto TempJob = std::move(Jobs.front());
