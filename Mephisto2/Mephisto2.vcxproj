@@ -168,6 +168,8 @@
     <ClInclude Include="Source\Math\Math.h" />
     <ClInclude Include="Source\Math\Noise.h" />
     <ClInclude Include="Source\Math\NoiseConstants.h" />
+    <ClInclude Include="Source\Platform\Platform.h" />
+    <ClInclude Include="Source\Platform\Windows.h" />
     <ClInclude Include="Source\Thread\Job.h" />
     <ClInclude Include="Source\World\IScene.h" />
     <ClInclude Include="Source\World\IWorld.h" />
@@ -189,12 +191,19 @@
     <ClInclude Include="ThirdParty\Threadpool\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Core\IApplication.cpp" />
     <ClCompile Include="Source\Core\StringUtils.cpp" />
     <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
+    <ClCompile Include="Source\Graphics\RenderQueue.cpp" />
+    <ClCompile Include="Source\Input\IKeyboardListener.cpp" />
+    <ClCompile Include="Source\Input\IMouseListener.cpp" />
+    <ClCompile Include="Source\Input\Keyboard.cpp" />
     <ClCompile Include="Source\Input\Mouse.cpp" />
     <ClCompile Include="Source\Math\Noise.cpp" />
+    <ClCompile Include="Source\Platform\Platform.cpp" />
+    <ClCompile Include="Source\Platform\Windows.cpp" />
     <ClCompile Include="Source\Thread\Job.cpp" />
     <ClCompile Include="Source\World\IScene.cpp" />
     <ClCompile Include="Source\World\IWorld.cpp" />

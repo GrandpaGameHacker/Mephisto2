@@ -1,12 +1,14 @@
 #pragma once
 #include <Types.h>
-namespace ME::Input {
+
+namespace ME::Input
+{
 	class IKeyboardListener
 	{
 	public:
-		IKeyboardListener() {};
-		virtual ~IKeyboardListener() {};
-		virtual OnKeyDown(int key, uint16 unicode) {};
-		virtual OnKeyUp(int key, uint16 unicode) {};
+		IKeyboardListener();
+		virtual ~IKeyboardListener();
+		virtual void OnKeyDown(int key, uint16 unicode) {};
+		virtual void OnKeyUp(int key, uint16 unicode) {};
 	};
 }

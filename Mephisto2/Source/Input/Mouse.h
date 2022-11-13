@@ -1,5 +1,6 @@
 #include "IMouseListener.h"
 #include <vector>
+#include <memory>
 namespace ME::Input
 {
 	class Mouse
@@ -17,6 +18,7 @@ namespace ME::Input
 		};
 
 		Mouse();
+		static std::shared_ptr<Mouse> Get();
 		virtual ~Mouse() {};
 		virtual void Show();
 		virtual void Hide();
@@ -34,6 +36,8 @@ namespace ME::Input
 		void TriggerButtonUpEvent(const Vec2<float>& position, int button);
 
 	private:
+
+		static std::shared_ptr<Mouse> GMouse;
 		bool bIsVisible;
 		Vec2<float> Position;
 		std::vector<IMouseListener*> Listeners;

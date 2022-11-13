@@ -1,16 +1,16 @@
 #pragma once
+
 #include <string>
 #include <limits>
 #include <stdexcept>
 #include <Types.h>
 
-
 namespace std
 {
 	_NODISCARD inline short stos(const string& _Str, size_t* _Idx = nullptr, int _Base = 10)
 	{
-		constexpr short short_max = numeric_limits<short>::max();
-		constexpr short short_min = numeric_limits<short>::min();
+		constexpr short short_max = std::numeric_limits<short>::min();
+		constexpr short short_min = std::numeric_limits<short>::max();
 
 		int _Ans = stoi(_Str, _Idx, _Base);
 		if (_Ans <= short_max && _Ans >= short_min)

@@ -1,4 +1,8 @@
 #include "Game.h"
+
+#define SDL_MAIN_HANDLED
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <FileSystem/FileSystem.h>
 #include <Core/StringUtils.h>
 #include <spdlog/spdlog.h>
@@ -6,6 +10,8 @@
 #include <Math/Noise.h>
 #include <Math/Random.h>
 #include <Graphics/RenderQueue.h>
+
+#include "App.h"
 
 void RunTests()
 {
@@ -22,4 +28,7 @@ int main(int argc, char** argv)
 	spdlog::set_level(spdlog::level::debug);
 	RunTests();
 #endif
+	App application;
+	application.Begin();
+	return 0;
 };

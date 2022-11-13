@@ -140,9 +140,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\App.cpp" />
     <ClCompile Include="Source\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\App.h" />
     <ClInclude Include="Source\Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

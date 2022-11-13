@@ -8,7 +8,7 @@ namespace ME::Input {
 		virtual ~IGamepadListener() {};
 		virtual void OnConnected(Gamepad* pad) {};
 		virtual void OnDisconnected(Gamepad* pad) {};
-		virtual void OnButtonUp(Gamepad* pad, int button) {};
-		virtual void OnButtonDown(Gamepad* pad, int button) {};
+		virtual void OnMouseButtonUp(Gamepad* pad, int button) {};
+		virtual void OnMouseButtonDown(Gamepad* pad, int button) {};
 	};
 }

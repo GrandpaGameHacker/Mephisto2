@@ -1,5 +1,5 @@
 #include "Mouse.h"
-
+std::shared_ptr<ME::Input::Mouse> ME::Input::Mouse::GMouse;
 ME::Input::Mouse::Mouse() :
     bIsVisible(true),
     Position(0.f, 0.f),
@@ -11,6 +11,15 @@ ME::Input::Mouse::Mouse() :
         ButtonsDown[i] = false;
         ButtonsUp[i] = false;
 	}
+}
+
+std::shared_ptr<ME::Input::Mouse> ME::Input::Mouse::Get()
+{
+    if (!GMouse)
+    {
+        GMouse = std::make_shared<Mouse>();
+    }
+    return GMouse;
 }
 
 void ME::Input::Mouse::Show()
@@ -60,18 +69,17 @@ void ME::Input::Mouse::OnStartFrame()
         ButtonsUp[i] = false;
     }
 }
-
 void ME::Input::Mouse::AddListener(IMouseListener* listener)
 {
     if (listener)
     {
         Listeners.push_back(listener);
     }
-}
+}		
 
 void ME::Input::Mouse::RemoveListener(IMouseListener* listener)
 {
-    std::vector<IMouseListener*> ::iterator iter = std::find(Listeners.begin(), Listeners.end(), listener);
+    std::vector<IMouseListener*>::iterator iter = std::find(Listeners.begin(), Listeners.end(), listener);
     if (iter != Listeners.end())
     {
         Listeners.erase(iter);
@@ -83,7 +91,7 @@ void ME::Input::Mouse::TriggerMoveEvent(const Vec2<float>& position)
     Position = position;
     for (auto& listener : Listeners)
     {
-        listener->OnMove(position);
+        listener->OnMouseMove(position);
     }
 }
 
@@ -92,7 +100,7 @@ void ME::Input::Mouse::TriggerButtonDownEvent(const Vec2<float>& position, int b
 	Position = position;
 	for (auto& listener : Listeners)
 	{
-		listener->OnButtonDown(position, button);
+		listener->OnMouseButtonDown(position, button);
 	}
 }
 
@@ -101,6 +109,6 @@ void ME::Input::Mouse::TriggerButtonUpEvent(const Vec2<float>& position, int but
 	Position = position;
 	for (auto& listener : Listeners)
 	{
-		listener->OnButtonUp(position, button);
+		listener->OnMouseButtonUp(position, button);
 	}
 }
