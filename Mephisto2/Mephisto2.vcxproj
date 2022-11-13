@@ -155,7 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Config\IConfig.h" />
     <ClInclude Include="Source\Core\StringUtils.h" />
     <ClInclude Include="Source\Graphics\IDrawable.h" />
     <ClInclude Include="Source\Core\Component\IComponent.h" />
@@ -188,12 +187,12 @@
     <ClInclude Include="Source\Input\Mouse.h" />
     <ClInclude Include="Source\Math\Random.h" />
     <ClInclude Include="Source\Types.h" />
+    <ClInclude Include="ThirdParty\STB\stb_image.h" />
     <ClInclude Include="ThirdParty\Threadpool\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\IApplication.cpp" />
     <ClCompile Include="Source\Core\StringUtils.cpp" />
-    <ClCompile Include="Source\Graphics\IDrawable.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />
     <ClCompile Include="Source\Core\Object\IObject.cpp" />
     <ClCompile Include="Source\Graphics\RenderQueue.cpp" />

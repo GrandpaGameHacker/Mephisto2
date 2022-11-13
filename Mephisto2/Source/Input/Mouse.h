@@ -8,12 +8,13 @@ namespace ME::Input
 	public:
 		enum MouseButton
 		{
-			Left,
-			Right,
-			Middle,
+			Left = 1,
+			Right = 3,
+			Middle = 2,
+			X1 = 4,
 			WheelUp,
 			WheelDown,
-			X1, X2,
+			X2,
 			NumberOfButtons
 		};
 
@@ -34,6 +35,7 @@ namespace ME::Input
 		void TriggerMoveEvent(const Vec2<float>& position);
 		void TriggerButtonDownEvent(const Vec2<float>& position, int button);
 		void TriggerButtonUpEvent(const Vec2<float>& position, int button);
+		void TriggerScrollwheelEvent(const Vec2<float>& position, const Vec2<float>& ScrollAmount);
 
 	private:
 
@@ -42,6 +44,7 @@ namespace ME::Input
 		Vec2<float> Position;
 		std::vector<IMouseListener*> Listeners;
 		std::vector<bool> ButtonsDown;
-		std::vector<bool> ButtonsUp;
+		std::vector<bool> ButtonsJustDown;
+		std::vector<bool> ButtonsJustUp;
 	};
 };

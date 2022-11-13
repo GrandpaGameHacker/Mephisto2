@@ -110,7 +110,7 @@ bool ME::Disk::GetFileInformation(std::filesystem::path& file, FileInformation& 
 	return false;
 }
 
-path ME::Disk::CurrentDirectory()
+std::filesystem::path ME::Disk::CurrentDirectory()
 {
 	return current_path();
 }
@@ -227,7 +227,7 @@ uint64_t ME::Disk::FileGetSize(const std::filesystem::path& file)
 	return size;
 }
 
-vector<path> ME::Disk::FilesIn(const std::filesystem::path& dir, bool bRecursive)
+std::vector<std::filesystem::path> ME::Disk::FilesIn(const std::filesystem::path & dir, bool bRecursive)
 {
 	vector<path> found;
 
@@ -250,9 +250,9 @@ vector<path> ME::Disk::FilesIn(const std::filesystem::path& dir, bool bRecursive
 	return found;
 }
 
-path ME::Disk::FilePathNormalize(std::filesystem::path& file, bool bAbsolute)
+std::filesystem::path ME::Disk::FilePathNormalize(std::filesystem::path& file, bool bAbsolute)
 {
-	path RelPath;
+	std::filesystem::path RelPath;
 	try
 	{
 		RelPath = relative(file, current_path());
@@ -270,27 +270,35 @@ path ME::Disk::FilePathNormalize(std::filesystem::path& file, bool bAbsolute)
 
 void ME::Disk::Append(std::filesystem::path& a, std::filesystem::path& b)
 {
-	a = path(a.string() + b.string());
+	a = std::filesystem::path(a.string() + b.string());
 }
 
 void ME::Disk::Append(std::filesystem::path& a, std::string& b)
 {
-	a = path(a.string() + b);
+	a = std::filesystem::path(a.string() + b);
 }
 
-path ME::Disk::FromCurrentDirectory(std::filesystem::path& a)
+
+std::filesystem::path ME::Disk::FromCurrentDirectory(std::filesystem::path& a)
 {
-	path p = CurrentDirectory();
+	std::filesystem::path p = CurrentDirectory();
 	Append(p, a);
 	return p;
 }
 
-path ME::Disk::FromCurrentDirectory(std::string& a)
+std::filesystem::path ME::Disk::FromCurrentDirectory(const char* a)
 {
-	path p = CurrentDirectory();
+	auto p = std::string(a);
+	return FromCurrentDirectory(p);
+}
+
+std::filesystem::path ME::Disk::FromCurrentDirectory(std::string & a)
+{
+	std::filesystem::path p = CurrentDirectory();
 	Append(p, a);
 	return p;
 }
+
 
 std::string ME::Disk::CurrentDirectoryToString()
 {
@@ -299,13 +307,13 @@ std::string ME::Disk::CurrentDirectoryToString()
 
 bool ME::Disk::DirectoryCreate(const std::string& dir)
 {
-	return DirectoryCreate(path(dir));
+	return DirectoryCreate(std::filesystem::path(dir));
 }
 
 
 bool ME::Disk::DirectoryCopy(const std::string& source, const std::string& destination)
 {
-	return DirectoryCopy(path(source), path(destination));
+	return DirectoryCopy(std::filesystem::path(source), path(destination));
 }
 
 bool ME::Disk::PathExists(const std::string& file_or_dir)
@@ -361,6 +369,7 @@ std::string ME::Disk::FilePathNormalize(std::string& file, bool bAbsolute)
 	auto PathResult = FilePathNormalize(PathFile, bAbsolute);
 	return PathResult.string();
 }
+
 
 void ME::Disk::internal::ProcessError(const std::string& function_name, filesystem_error& exception)
 {
@@ -426,4 +435,112 @@ void ME::Disk::internal::TestAll()
 	MEPH_ASSERT(PathDelete(TestDirectoryCopy));
 
 	spdlog::debug("ME::Disk test case passed!\n\n"); 
+}
+
+ME::Disk::File::File(){}
+
+ME::Disk::File::File(std::filesystem::path path, bool bOverwrite)
+{
+	Path = path;
+	this->bOverwrite = bOverwrite;
+	GetFileInformation(path, Info);
+	Open();
+}
+
+ME::Disk::File::~File()
+{
+	Close();
+}
+
+bool ME::Disk::File::Open()
+{
+	if (!bOpened)
+	{
+		FileCreate(Path, Stream, bOverwrite);
+		bOpened = Stream.is_open();
+		return bOpened;
+	}
+	return false;
+}
+
+void ME::Disk::File::Close()
+{
+	if (bOpened || Stream.is_open())
+	{
+		Stream.close();
+		bOpened = Stream.is_open();
+	}
+}
+
+void ME::Disk::File::Write(uint8* data, size_t length)
+{
+	MEPH_ASSERT(data);
+	if (bOpened)
+	{
+		Stream.write((const char*) data, length);
+	}
+	else if (Open())
+	{
+		Stream.write((const char*) data, length);
+	}
+	spdlog::error("File::Write() -> tried to write to a inacessable file");
+}
+
+void ME::Disk::File::Write(char* data, size_t length)
+{
+	MEPH_ASSERT(data);
+	if (bOpened)
+	{
+		Stream.write(data, length);
+	}
+	else if (Open())
+	{
+		Stream.write(data, length);
+	}
+	spdlog::error("File::Write() -> tried to write to a inacessable file");
+}
+
+void ME::Disk::File::Write(std::string& data)
+{
+	if (bOpened)
+	{
+		Stream.write(data.c_str(), data.length());
+	}
+	else if(Open())
+	{
+		Stream.write(data.c_str(), data.length());
+	}
+	spdlog::error("File::Write() -> tried to write to a inacessable file");
+}
+
+std::shared_ptr<uint8[]> ME::Disk::File::Read()
+{
+	if (!bOpened || !Info.SizeInBytes) return nullptr;
+
+	auto data = make_shared<uint8[]>(Info.SizeInBytes);
+	Stream.read((char*)data.get(), Info.SizeInBytes);
+	return data;
+}
+
+std::shared_ptr<uint8[]> ME::Disk::File::Read(size_t length)
+{
+	if (!bOpened || !Info.SizeInBytes) return nullptr;
+	if (length > Info.SizeInBytes) return Read();
+
+	auto data = make_shared<uint8[]>(length);
+	Stream.read((char*)data.get(), length);
+	return data;
+}
+
+std::string ME::Disk::File::ReadString()
+{
+	std::string outString;
+	if (!bOpened) return outString;
+
+	std::string lineContent;
+	while (std::getline(Stream, lineContent))
+	{
+		outString.append(lineContent + "\n");
+	}
+	return outString;
 }

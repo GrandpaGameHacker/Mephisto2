@@ -40,6 +40,7 @@ bool IApplication::Initialize(const std::string& Title, WindowRect& WinRect, uin
 
     Renderer = std::make_unique<ME::Graphics::RenderQueue>(Window);
     Renderer->SetupOpenGL();
+    GetTimeSinceStart();
     return true;
 }
 
@@ -70,9 +71,16 @@ Vec2<int> IApplication::GetDrawableSize() const
 float IApplication::GetDeltaTime()
 {
 	typedef std::chrono::high_resolution_clock Time;
-	static long long started = Time::now().time_since_epoch().count();
 	long long now = Time::now().time_since_epoch().count();
-	return static_cast<float>(now - started) / 1000000000.f;
+	return static_cast<float>(now - FrameStart) / 1000000000.f;
+}
+
+float IApplication::GetTimeSinceStart()
+{
+	typedef std::chrono::high_resolution_clock Time;
+    static long long start = Time::now().time_since_epoch().count();
+	long long now = Time::now().time_since_epoch().count();
+	return static_cast<float>(now - start) / 1000000000.f;
 }
 
 bool IApplication::IsRunning() const
@@ -90,14 +98,19 @@ void IApplication::Begin()
     PreInit();
     while (bIsRunning)
     {
+        typedef std::chrono::high_resolution_clock Time;
+        FrameStart = Time::now().time_since_epoch().count();
         SDL_Event event;
 
         while (SDL_PollEvent(&event))
         {
             EventLoop(&event);
         }
+        ME::Input::Mouse::Get()->OnStartFrame();
+        ME::Input::Keyboard::Get()->OnStartFrame();
+        Renderer->NewFrame();
         Tick(GetDeltaTime());
-
+        Renderer->Swap();
     }
 }
 
@@ -107,14 +120,42 @@ void IApplication::ResizeHandler(SDL_Event* event)
 
 void IApplication::EventLoop(SDL_Event* event)
 {
+    Vec2<float> pos;
+    Vec2<float> scrollAmount;
     switch (event->type)
     {
     case SDL_QUIT:
         bIsRunning = false;
         break;
+
     case SDL_MOUSEBUTTONDOWN:
-        Vec2<float> pos = Vec2<float>((float)event->button.x, (float)event->button.y);
+        pos = Vec2<float>((float)event->button.x, (float)event->button.y);
         ME::Input::Mouse::Get()->TriggerButtonDownEvent(pos, event->button.button);
         break;
+
+    case SDL_MOUSEBUTTONUP:
+		pos = Vec2<float>((float)event->button.x, (float)event->button.y);
+		ME::Input::Mouse::Get()->TriggerButtonUpEvent(pos, event->button.button);
+		break;
+
+    case SDL_MOUSEMOTION:
+		pos = Vec2<float>((float)event->motion.x, (float)event->motion.y);
+		ME::Input::Mouse::Get()->TriggerMoveEvent(pos);
+        break;
+
+    case SDL_MOUSEWHEEL:
+        int x, y;
+        scrollAmount = Vec2<float>(event->wheel.preciseX, event->wheel.preciseY);
+        SDL_GetMouseState(&x, &y);
+        pos = Vec2<float>((float)x, (float)y);
+		ME::Input::Mouse::Get()->TriggerScrollwheelEvent(pos, scrollAmount);
+        break;
+
+    case SDL_KEYDOWN:
+        ME::Input::Keyboard::Get()->TriggerKeyDownEvent(event->key.keysym.scancode);
+        break;
+
+    case SDL_KEYUP:
+		ME::Input::Keyboard::Get()->TriggerKeyUpEvent(event->key.keysym.scancode);
     }
 }

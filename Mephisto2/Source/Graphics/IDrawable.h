@@ -1,9 +1,9 @@
 #pragma once
- class IDrawable
+class IDrawable
 {
-	 IDrawable();
-	 virtual ~IDrawable() {};
-	 virtual void Draw() = 0;
-	 virtual bool IsVisible() { return false;  };
+	IDrawable() = default;
+	virtual ~IDrawable() {};
+	virtual void Draw() = 0;
+	virtual bool IsVisible() = 0;
 };
 

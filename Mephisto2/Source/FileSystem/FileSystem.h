@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <Types.h>
 // anonymous namespace to prevent includes from including std into other files
 namespace ME
 {
@@ -50,6 +51,30 @@ namespace ME
 			time_t LastStatusChange = 0;
 			SecurityPermissions Permissions;
 			uint64_t SizeInBytes = 0;
+		};
+
+		class File
+		{
+		public:
+			File();
+			File(std::filesystem::path path, bool bOverwrite = false);
+			~File();
+
+			bool Open();
+			void Close();
+			void Write(uint8* data, size_t length);
+			void Write(char* data, size_t length);
+			void Write(std::string& data);
+			std::shared_ptr<uint8[]> Read();
+			std::shared_ptr<uint8[]> Read(size_t length);
+			std::string ReadString();
+
+		private:
+			std::filesystem::path Path;
+			std::fstream Stream;
+			FileInformation Info;
+			bool bOpened = false;
+			bool bOverwrite = false;
 		};
 
 		/// <summary>
@@ -159,6 +184,10 @@ namespace ME
 		/// <returns></returns>
 		std::filesystem::path FromCurrentDirectory(std::filesystem::path& a);
 
+
+		//------------------------------------------------------------------------
+		//						overloads 
+		//------------------------------------------------------------------------
 		/// <summary>
 		/// Gets the current directory and appends the std::string to it
 		/// </summary>
@@ -166,13 +195,13 @@ namespace ME
 		/// <returns></returns>
 		std::filesystem::path FromCurrentDirectory(std::string& a);
 
-#define GetAsset(AssetType, AssetName) GetAssetLocation(#AssetType, AssetName);
 
-		std::filesystem::path GetAssetLocation(std::string& AssetType, std::string& AssetName);
-
-		//------------------------------------------------------------------------
-		//						 std::std::string overloads 
-		//------------------------------------------------------------------------
+		/// <summary>
+		/// Gets the current directory and appends the std::string to it
+		/// </summary>
+		/// <param name="a">a relative path</param>
+		/// <returns></returns>
+		std::filesystem::path FromCurrentDirectory(const char* a);
 
 		/// <summary>
 		/// gets the current directory for the running program.

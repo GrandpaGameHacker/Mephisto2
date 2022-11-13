@@ -14,12 +14,17 @@ namespace ME::Graphics
 	class RenderQueue
 	{
 	public:
-		RenderQueue() : Queue(nullptr), GLContext(nullptr) {};
+		RenderQueue() : Queue(nullptr), GLContext(nullptr), WindowContext(nullptr){};
 
 		RenderQueue(SDL_Window* Window) : Queue(nullptr), GLContext(nullptr)
 		{
 			Queue = std::make_unique<ME::Thread::JobQueue>();
 			Execute([=] {
+#ifdef _DEBUG_RENDERDOC_
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#endif
 				GLContext = SDL_GL_CreateContext(Window); 
 				WindowContext = Window;});
 		};
@@ -37,12 +42,16 @@ namespace ME::Graphics
 		}
 		
 		// Only use inside Execute([...] {...}) lambdas
-		const SDL_GLContext GetContext();
+		const SDL_GLContext GetContext() { return GLContext; }
+
 		bool SetupOpenGL();
+		void NewFrame();
+		void Swap();
 	protected:
 		std::unique_ptr<ME::Thread::JobQueue> Queue;
 		SDL_GLContext GLContext;
 		SDL_Window* WindowContext;
+
 	};
 
 }

@@ -35,6 +35,7 @@ public:
 	Vec2<int> GetDrawableSize() const;
 
 	float GetDeltaTime();
+	float GetTimeSinceStart();
 	bool IsRunning() const;
 	bool IsValid() const;
 
@@ -48,6 +49,7 @@ public:
 	static ThreadPool ThrdPool;
 
 protected:
+	long long FrameStart;
 	SDL_Window* Window = nullptr;
 	std::string Name;
 	WindowRect Rect;
