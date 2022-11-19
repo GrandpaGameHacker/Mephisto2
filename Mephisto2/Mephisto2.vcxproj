@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\StringUtils.h" />
+    <ClInclude Include="Source\Delegate\Delegate.h" />
     <ClInclude Include="Source\Graphics\IDrawable.h" />
     <ClInclude Include="Source\Core\Component\IComponent.h" />
     <ClInclude Include="Source\Core\Object\IObject.h" />
@@ -191,6 +192,8 @@
     <ClInclude Include="ThirdParty\Threadpool\ThreadPool.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Assets\AssetLoader.cpp" />
+    <ClCompile Include="Source\Assets\IAsset.cpp" />
     <ClCompile Include="Source\Core\IApplication.cpp" />
     <ClCompile Include="Source\Core\StringUtils.cpp" />
     <ClCompile Include="Source\Core\Component\IComponent.cpp" />

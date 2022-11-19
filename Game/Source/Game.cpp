@@ -7,6 +7,7 @@
 /* Test Case Includes *///////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 #include <FileSystem/FileSystem.h>
+#include <Assets/AssetLoader.h>
 #include <Core/StringUtils.h>
 //////////////////////////////////////////////////////////////////////////
 
@@ -28,6 +29,9 @@ int main(int argc, char** argv)
 	spdlog::set_level(spdlog::level::debug);
 	RunTests();
 #endif
+	AssetLoader myLoader;
+	auto future_asset = myLoader.LoadAsync("/Assets/TestAsset.txt", ME::Disk::EFileMode::ASCII);
+	auto asset = future_asset.get();
 	SDL_SetMainReady();
 	App application;
 	application.Begin();

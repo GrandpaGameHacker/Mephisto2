@@ -53,26 +53,37 @@ namespace ME
 			uint64_t SizeInBytes = 0;
 		};
 
+		enum class EFileMode
+		{
+			Binary,
+			ASCII,
+			Unicode
+		};
+
 		class File
 		{
 		public:
 			File();
-			File(std::filesystem::path path, bool bOverwrite = false);
+			File(std::filesystem::path path, EFileMode mode, bool bOverwrite = false);
 			~File();
-
+			bool Valid();
 			bool Open();
 			void Close();
 			void Write(uint8* data, size_t length);
 			void Write(char* data, size_t length);
 			void Write(std::string& data);
+			void Write(std::wstring& data);
 			std::shared_ptr<uint8[]> Read();
 			std::shared_ptr<uint8[]> Read(size_t length);
 			std::string ReadString();
+			std::wstring ReadUnicodeString();
+			FileInformation Info;
+			std::filesystem::path Path;
+			EFileMode Mode;
 
 		private:
-			std::filesystem::path Path;
 			std::fstream Stream;
-			FileInformation Info;
+			std::wfstream WStream;
 			bool bOpened = false;
 			bool bOverwrite = false;
 		};
@@ -128,6 +139,15 @@ namespace ME
 		/// <param name="bOverwrite">boolean flag to overwrite the file if it exists (default true)</param>
 		/// <returns>true on file creation success</returns>
 		bool FileCreate(const std::filesystem::path& file, std::fstream& stream, bool bOverwrite = true);
+
+		/// <summary>
+		/// Create a new unicode file, if it exists overwrite by default
+		/// </summary>
+		/// <param name="file"></param>
+		/// <param name="stream"></param>
+		/// <param name="bOverwrite"></param>
+		/// <returns>true on file creation success</returns>
+		bool FileCreateW(const std::filesystem::path& file, std::wfstream& stream, bool bOverwrite = true);
 
 		/// <summary>
 		/// Copy a file from a source location to a destination
@@ -246,6 +266,8 @@ namespace ME
 		/// <param name="bOverwrite">boolean flag to overwrite the file if it exists (default true)</param>
 		/// <returns>true on file creation success</returns>
 		bool FileCreate(const std::string& file, std::fstream& stream, bool bOverwrite = true);
+
+		bool FileCreateW(const std::string& file, std::wfstream& stream, bool bOverwrite = true);
 
 		/// <summary>
 		/// Copy a file from a source location to a destination
